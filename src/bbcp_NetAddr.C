@@ -50,6 +50,8 @@
 #define s6_addr32 _S6_un._S6_u32
 #elif defined(MACOS)
 #define s6_addr32 __u6_addr.__u6_addr32
+#elif defined(__FreeBSD__)
+#define s6_addr32 __u6_addr.__u6_addr32
 #endif
 #endif
 
