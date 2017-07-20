@@ -32,6 +32,13 @@
 
 #if defined(MACOS) || defined(AIX)
 #define memalign(pgsz,amt) valloc(amt)
+#elif defined(__FreeBSD__)
+#include <stdlib.h>
+void *memalign(size_t alignment, size_t size) {
+	void *temp;
+	posix_memalign(&temp, alignment, size);
+	return temp;
+}
 #else
 #include <malloc.h>
 #endif

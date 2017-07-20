@@ -40,9 +40,9 @@
 #include "bbcp_Headers.h"
 #include "bbcp_RTCopy.h"
 
-#ifdef FREEBSD
+#ifdef __FreeBSD__
 #undef ENODATA
-#define ENODATA ENOATTRR
+#define ENODATA ENOATTR
 #endif
 
 /******************************************************************************/
