@@ -29,6 +29,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <sys/mman.h>
+#include <errno.h>
 
 #if defined(MACOS) || defined(AIX)
 #define memalign(pgsz,amt) valloc(amt)
@@ -36,7 +37,9 @@
 #include <stdlib.h>
 void *memalign(size_t alignment, size_t size) {
 	void *temp;
-	posix_memalign(&temp, alignment, size);
+	if (posix_memalign(&temp, alignment, size) != 0) {
+		{ throw "posix_memalign() failure!", errno; }
+	}
 	return temp;
 }
 #else
@@ -58,11 +61,11 @@ void *memalign(size_t alignment, size_t size) {
 bbcp_BuffPool bbcp_APool("disk");
 bbcp_BuffPool bbcp_BPool;
 bbcp_BuffPool bbcp_CPool("C");
-  
+
 /******************************************************************************/
 /*                           c o n s t r u c t o r                            */
 /******************************************************************************/
-  
+
 bbcp_BuffPool::bbcp_BuffPool(const char *id) : EmptyBuffs(0), FullBuffs(0)
 {
 
@@ -81,7 +84,7 @@ bbcp_BuffPool::bbcp_BuffPool(const char *id) : EmptyBuffs(0), FullBuffs(0)
 /******************************************************************************/
 /*                            D e s t r u c t o r                             */
 /******************************************************************************/
-  
+
 bbcp_BuffPool::~bbcp_BuffPool()
 {
    bbcp_Buffer *currp;
@@ -100,7 +103,7 @@ bbcp_BuffPool::~bbcp_BuffPool()
         {next_full = next_full->next; delete currp;}
    FullPool.UnLock();
 }
-  
+
 /******************************************************************************/
 /*                                 A b o r t                                  */
 /******************************************************************************/
@@ -123,7 +126,7 @@ void bbcp_BuffPool::Abort()
    FullBuffs.Post();
    if (Kicking) {DEBUG("Aborting the " <<pname <<" buffer pool.");}
 }
-  
+
 /******************************************************************************/
 /*                              A l l o c a t e                               */
 /******************************************************************************/
@@ -131,7 +134,7 @@ void bbcp_BuffPool::Abort()
 #ifndef MAP_ALIGN
 #define MAP_ALIGN 0
 #endif
-  
+
 int bbcp_BuffPool::Allocate(int buffnum, int  bsize, int Sink, int ovhd)
 {
    static const int mapOpts = MAP_SHARED|MAP_ANON|MAP_ALIGN;
@@ -180,9 +183,9 @@ int bbcp_BuffPool::Allocate(int buffnum, int  bsize, int Sink, int ovhd)
          ") byte buffs in the " <<pname <<" pool.");
    return bnum+1;
 }
-  
+
 /******************************************************************************/
-  
+
 int bbcp_BuffPool::Allocate(int buffnum)
 {
    static int PageSize = sysconf(_SC_PAGESIZE);
@@ -215,11 +218,11 @@ int bbcp_BuffPool::Allocate(int buffnum)
          ") byte buffs in the " <<pname <<" pool.");
    return bnum+1;
 }
-  
+
 /******************************************************************************/
 /*                          g e t E m p t y B u f f                           */
 /******************************************************************************/
-  
+
 bbcp_Buffer *bbcp_BuffPool::getEmptyBuff()
 {
    bbcp_Buffer *buffp = 0;
@@ -248,7 +251,7 @@ bbcp_Buffer *bbcp_BuffPool::getEmptyBuff()
 /******************************************************************************/
 /*                          p u t E m p t y B u f f                           */
 /******************************************************************************/
-  
+
 void bbcp_BuffPool::putEmptyBuff(bbcp_Buffer *buffp)
 {
 
@@ -263,11 +266,11 @@ void bbcp_BuffPool::putEmptyBuff(bbcp_Buffer *buffp)
 //
    EmptyBuffs.Post();
 }
- 
+
 /******************************************************************************/
 /*                           g e t F u l l B u f f                            */
 /******************************************************************************/
-  
+
 bbcp_Buffer *bbcp_BuffPool::getFullBuff()
 {
    bbcp_Buffer *buffp = 0;
@@ -293,11 +296,11 @@ bbcp_Buffer *bbcp_BuffPool::getFullBuff()
    if (RU486) FullBuffs.Post();
    return buffp;
 }
- 
+
 /******************************************************************************/
 /*                           p u t F u l l B u f f                            */
 /******************************************************************************/
-  
+
 void bbcp_BuffPool::putFullBuff(bbcp_Buffer *buffp)
 {
 
@@ -314,7 +317,7 @@ void bbcp_BuffPool::putFullBuff(bbcp_Buffer *buffp)
 //
    FullBuffs.Post();
 }
- 
+
 /******************************************************************************/
 /*                       H e a d e r   H a n d l i n g                        */
 /******************************************************************************/
@@ -325,7 +328,7 @@ void bbcp_BuffPool::putFullBuff(bbcp_Buffer *buffp)
 #define USBUFF int  USbuffL, USbuff[2]; unsigned short USbuffS; char *UScp
 
 /******************************************************************************/
-  
+
 #define Ser(x,y) memcpy((void *)y,(const void *)&x,sizeof(x));
 
 #define SerC(x,y)  *y = x;
@@ -354,7 +357,7 @@ void bbcp_BuffPool::putFullBuff(bbcp_Buffer *buffp)
 /******************************************************************************/
 /*                                D e c o d e                                 */
 /******************************************************************************/
-  
+
 int  bbcp_BuffPool::Decode(bbcp_Buffer *bp)
 {
      USBUFF;
@@ -386,11 +389,11 @@ int  bbcp_BuffPool::Decode(bbcp_Buffer *bp)
    UnsLL(bp->boff, hp->boff);
    return 1;
 }
- 
+
 /******************************************************************************/
 /*                                E n c o d e                                 */
 /******************************************************************************/
-  
+
 void bbcp_BuffPool::Encode(bbcp_Buffer *bp, char xcmnd)
 {
      USBUFF;

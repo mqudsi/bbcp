@@ -34,7 +34,7 @@
    AIX: -D_THREAD_SAFE
    SUN: -D_REENTRANT
 */
-  
+
 #include <unistd.h>
 #include <ctype.h>
 #include <errno.h>
@@ -104,7 +104,7 @@ namespace
 {
        char lclHost[] = {'l','o','c','a','l','h','o','s','t','\0'};
 };
-  
+
 /******************************************************************************/
 /*                           C o n s t r u c t o r                            */
 /******************************************************************************/
@@ -447,6 +447,11 @@ void bbcp_Config::Arguments(int argc, char **argv, int cfgfd)
        }
      }
 
+#ifdef __FreeBSD__
+   //bbcp's mapped IPv4 nonsense is completely broken on FreeBSD
+   Options |= bbcp_IPV4;
+#endif
+
 // If we were processing the configuration file, return
 //
    if (!notctl && cfgfd >= 0) return;
@@ -677,7 +682,7 @@ void bbcp_Config::Arguments(int argc, char **argv, int cfgfd)
 #define I(x)    cout <<'\n' <<x <<endl;
 
 /******************************************************************************/
-  
+
 void bbcp_Config::help(int rc)
 {
 H("Usage:   bbcp [Options] [Inspec] Outspec")
@@ -758,11 +763,11 @@ H("******* Complete details at: http://www.slac.stanford.edu/~abh/bbcp")
 I(bbcp_Version.Version)
 exit(rc);
 }
-  
+
 /******************************************************************************/
 /*                            C o n f i g I n i t                             */
 /******************************************************************************/
-  
+
 int bbcp_Config::ConfigInit(int argc, char **argv)
 {
 /*
@@ -821,11 +826,11 @@ int bbcp_Config::ConfigInit(int argc, char **argv)
 //
    return retc;
 }
-  
+
 /******************************************************************************/
 /*                             C o n f i g u r e                              */
 /******************************************************************************/
-  
+
 int bbcp_Config::Configure(const char *cfgFN)
 {
 /*
@@ -857,7 +862,7 @@ int bbcp_Config::Configure(const char *cfgFN)
 /******************************************************************************/
 /*                               D i s p l a y                                */
 /******************************************************************************/
-  
+
 void bbcp_Config::Display()
 {
 
@@ -916,11 +921,11 @@ const char *bbcp_Config::Scale(double &xVal)
     if (xVal < Kilo) return "Y";
     return "";
 }
- 
+
 /******************************************************************************/
 /*                                 W A M s g                                  */
 /******************************************************************************/
-  
+
 void bbcp_Config::WAMsg(const char *who, const char *act, int newsz)
 {
     char buff[128];
@@ -1012,7 +1017,7 @@ void bbcp_Config::Config_Ctl(int rwbsz)
    if (Options & (bbcp_RXONLY|bbcp_RDONLY))    Add_Opt('+');
    CopyOpts = strdup(cbuff);
 }
-  
+
 /******************************************************************************/
 /*                            C o n f i g _ X e q                             */
 /******************************************************************************/
@@ -1077,11 +1082,11 @@ void bbcp_Config::Config_Xeq(int rwbsz)
                            "copy may be slow");
       }
 }
-  
+
 /******************************************************************************/
 /*                                R t o k e n                                 */
 /******************************************************************************/
-  
+
 char *bbcp_Config::Rtoken()
 {
    int mynum = (int)getpid();
@@ -1201,7 +1206,7 @@ char *bbcp_Config::n2a(long long  val, char *buff, const char *fmt)
 /******************************************************************************/
 /*                               P a r s e S B                                */
 /******************************************************************************/
-  
+
 void bbcp_Config::ParseSB(char *spec)
 {
    char *up = 0, *hp = 0, *cp, *sp;
@@ -1232,11 +1237,11 @@ void bbcp_Config::ParseSB(char *spec)
    if (SrcUser && !(*SrcUser)) SrcUser = 0;
    if (SrcHost && !(*SrcHost)) SrcHost = 0;
 }
-  
+
 /******************************************************************************/
 /*                                 E O p t s                                  */
 /******************************************************************************/
-  
+
 int bbcp_Config::EOpts(char *opts)
 {
    int csLen, csPrt = 0, csSrc = 0;
@@ -1309,7 +1314,7 @@ int bbcp_Config::EOpts(char *opts)
 /******************************************************************************/
 /*                               L o g O p t s                                */
 /******************************************************************************/
-  
+
 int bbcp_Config::LogOpts(char *opts)
 {
     char *opt = opts;
@@ -1349,7 +1354,7 @@ int bbcp_Config::LogOpts(char *opts)
 /******************************************************************************/
 /*                          H o s t A n d   P o r t                           */
 /******************************************************************************/
-  
+
 int bbcp_Config::HostAndPort(const char *what, char *path, char *buff, int bsz)
 {   int hlen, pnum = 0;
     char *hn;
@@ -1388,11 +1393,11 @@ int bbcp_Config::HostAndPort(const char *what, char *path, char *buff, int bsz)
     buff[hlen] = '\0';
     return pnum;
 }
-  
+
 /******************************************************************************/
 /*                                 R O p t s                                  */
 /******************************************************************************/
-  
+
 int bbcp_Config::ROpts(char *opts)
 {
    struct auto_RO {char *S; auto_RO(char *x) : S(strdup(x)) {}
@@ -1412,7 +1417,7 @@ int bbcp_Config::ROpts(char *opts)
    while(rOpts && *rOpts)
         {if ((rNext = index(rOpts, ','))) while(*rNext == ',') *rNext++ = '\0';
          switch(*rOpts)
-               {case 'c': if (*(rOpts+1) != '=' 
+               {case 'c': if (*(rOpts+1) != '='
                           ||  (rtCheck = atoi(rOpts+2)) <= 0)
                              return ROptsErr(rOpts);
                           break;
@@ -1442,17 +1447,17 @@ int bbcp_Config::ROpts(char *opts)
 /******************************************************************************/
 /*                              R O p t s E r r                               */
 /******************************************************************************/
-  
+
 int bbcp_Config::ROptsErr(char *eTxt)
 {
     bbcp_Fmsg("Config", "Invalid -R argument -", eTxt);
     return -1;
 }
- 
+
 /******************************************************************************/
 /*                                 s e t C S                                  */
 /******************************************************************************/
-  
+
 void bbcp_Config::setCS(char *inCS)
 {
 // Set checksum
@@ -1460,11 +1465,11 @@ void bbcp_Config::setCS(char *inCS)
    memcpy(csValue,inCS,csSize);
    tohex(inCS,csSize,csString);
 }
-  
+
 /******************************************************************************/
 /*                               s e t I P V 4                                */
 /******************************************************************************/
-  
+
 int bbcp_Config::setIPV4(char *opts)
 {
     static char ipv4opt[] = {' ', '-', '4', '\0'};
@@ -1483,11 +1488,11 @@ int bbcp_Config::setIPV4(char *opts)
             } else {CopyOSrc = CopyOTrg = ipv4opt; Options |= bbcp_IPV4;}
     return 0;
 }
-  
+
 /******************************************************************************/
 /*                               s e t O p t s                                */
 /******************************************************************************/
-  
+
 void bbcp_Config::setOpts(bbcp_Args &Args)
 {
      Args.Option("append",     1, 'a', '.');
@@ -1588,7 +1593,7 @@ int bbcp_Config::setPorts(char *pspec)
    PorSpec = strdup(buff);
    return 1;
 }
-  
+
 /******************************************************************************/
 /*                                s e t R W B                                 */
 /******************************************************************************/
@@ -1627,7 +1632,7 @@ char *bbcp_Config::tohex(char *inbuff, int inlen, char *outbuff) {
 /******************************************************************************/
 /*                                U n b u f f                                 */
 /******************************************************************************/
-  
+
 int bbcp_Config::Unbuff(char *opts)
 {
     char *opt = opts;
@@ -1647,7 +1652,7 @@ int bbcp_Config::Unbuff(char *opts)
 /******************************************************************************/
 /*                                U n p i p e                                 */
 /******************************************************************************/
-  
+
 int bbcp_Config::Unpipe(char *opts)
 {
     char *opt = opts;
@@ -1669,7 +1674,7 @@ int bbcp_Config::Unpipe(char *opts)
 /******************************************************************************/
 /*                               C l e a n u p                                */
 /******************************************************************************/
-  
+
 void bbcp_Config::Cleanup(int rc, char *cfgfn, int cfgfd)
 {
 if (cfgfd >= 0 && cfgfn)

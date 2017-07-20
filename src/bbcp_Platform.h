@@ -46,7 +46,6 @@
 #if defined(FREEBSD)
 #define SYS_ERR_DEF const char *const
 #define SYS_NER_DEF const int
-#define IOV_MAX 16
 #endif
 
 #if defined(FREEBSD) || defined(MACOS)
@@ -69,7 +68,7 @@
      (rpnt = getservbyname(name, stype))
 
 #endif
-  
+
 #ifdef LINUX
 
 // The value should be MAX_IOVEC but it's not defined in Linux, sigh
@@ -138,12 +137,7 @@ typedef       void * gsval_t;
 typedef       void * ssval_t;
 typedef size_t Size_T;
 
-#ifdef FREEBSD
-#define EPROTO  EPROTOTYPE
-#define ENOSR   EILSEQ
-#endif
-
-#if defined(FREEBSD) || defined(MACOS) || defined(AIX)
+#if defined(__FreeBSD__) || defined(MACOS) || defined(AIX)
 #define EBADSLT EFAULT
 #endif
 
