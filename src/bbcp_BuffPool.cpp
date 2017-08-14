@@ -30,6 +30,7 @@
 #include <inttypes.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <system_error>
 
 
 #if defined(MACOS) || defined(AIX)
