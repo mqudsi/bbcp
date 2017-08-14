@@ -1,3 +1,5 @@
+.OBJDIR: ./
+
 all:
 	cd src && make
 clean:
