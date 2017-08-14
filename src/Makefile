@@ -59,8 +59,8 @@ LNXcc      = gcc
 
 BSDOPT     = $(SUN64) $(NLGR) -D_REENTRANT -DOO_STD -DFREEBSD -pthread
 
-BSDCC      = g++
-BSDcc      = gcc
+BSDCC      = clang++
+BSDcc      = clang
 
 MACOPT     = $(SUN64) $(NLGR) -D_REENTRANT -DOO_STD -DMACOS -Wno-deprecated -g
 
