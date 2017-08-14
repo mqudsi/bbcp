@@ -38,18 +38,18 @@
 #include "bbcp_Protocol.h"
 #include "bbcp_Pthread.h"
 #include "bbcp_Version.h"
- 
+
 /******************************************************************************/
 /*                         L o c a l   C l a s s e s                          */
 /******************************************************************************/
-  
+
 class bbcp_Login_Stream
 {
 public:
 
 bbcp_Node *np;
 
-      bbcp_Login_Stream(bbcp_Link *Net) 
+      bbcp_Login_Stream(bbcp_Link *Net)
            {np = new bbcp_Node(Net);}
      ~bbcp_Login_Stream()
            {if (np) delete np;}
@@ -58,7 +58,7 @@ bbcp_Node *np;
 /******************************************************************************/
 /*                      E x t e r n a l   O b j e c t s                       */
 /******************************************************************************/
-  
+
 extern bbcp_Config   bbcp_Config;
 
 extern bbcp_Network  bbcp_Net;
@@ -66,14 +66,14 @@ extern bbcp_Network  bbcp_Net;
 extern bbcp_Version  bbcp_Version;
 
 extern "C" {extern void *bbcp_FileSpecIndex(void *pp);}
-  
+
 /******************************************************************************/
 /*                              S c h e d u l e                               */
 /******************************************************************************/
-  
-int bbcp_Protocol::Schedule(bbcp_Node *Fnode, bbcp_FileSpec *Ffs, 
+
+int bbcp_Protocol::Schedule(bbcp_Node *Fnode, bbcp_FileSpec *Ffs,
                                  char *Fcmd,           char *Ftype,
-                            bbcp_Node *Lnode, bbcp_FileSpec *Lfs, 
+                            bbcp_Node *Lnode, bbcp_FileSpec *Lfs,
                                  char *Lcmd,           char *Ltype,
                             bbcp_Node *Tnode)
 {
@@ -163,11 +163,11 @@ int bbcp_Protocol::getCBPort(bbcp_Node *Node)
    return bbcp_Fmsg("Protocol", "bbcp unexpectedly terminated on",
                      Node->NodeName());
 }
-  
+
 /******************************************************************************/
 /*                             s e t C B P o r t                              */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::setCBPort(int pnum)
 {
 
@@ -180,7 +180,7 @@ int bbcp_Protocol::setCBPort(int pnum)
 /******************************************************************************/
 /*                                g e t E n d                                 */
 /******************************************************************************/
-  
+
 void bbcp_Protocol::getEnd(bbcp_Node *Node)
 {
    char *wp, csVal[64];
@@ -215,11 +215,11 @@ void bbcp_Protocol::getEnd(bbcp_Node *Node)
         }
     DEBUG("At end files=" <<Node->TotFiles <<" bytes=" <<Node->TotBytes);
 }
-  
+
 /******************************************************************************/
 /* Source:                       P r o c e s s                                */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Process(bbcp_Node *Node)
 {
    bbcp_FileSpec *fp = bbcp_Config.srcSpec;
@@ -303,14 +303,14 @@ int bbcp_Protocol::Process(bbcp_Node *Node)
                              Remote->NodeName());
    return 32;
 }
- 
+
 /******************************************************************************/
 /*                       P r o c e s s   M e t h o d s                        */
 /******************************************************************************/
 /******************************************************************************/
 /*                          P r o c e s s _ e x i t                           */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Process_exit()
 {
     int  retc;
@@ -326,11 +326,11 @@ int bbcp_Protocol::Process_exit()
 //
    return (int)retc;
 }
-  
+
 /******************************************************************************/
 /*                         P r o c e s s _ f l i s t                          */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Process_flist()
 {
    bbcp_FileSpec *dp = bbcp_Config.srcPath;
@@ -350,7 +350,7 @@ int bbcp_Protocol::Process_flist()
 
 // Simply go through the list of files and report them back to the caller
 
-   while(fp) 
+   while(fp)
       {if (fp->Info.Otype != 'd' || *(fp->filename))
           {if ((blen = fp->Encode(buff,(size_t)sizeof(buff))) < 0) return -1;
            if (Remote->Put(buff, blen)) return -1;
@@ -362,11 +362,11 @@ int bbcp_Protocol::Process_flist()
 //
    return Remote->Put(eoltag, eoltsz);
 }
- 
+
 /******************************************************************************/
 /*                           P r o c e s s _ g e t                            */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Process_get()
 {
    bbcp_FileSpec *pp = 0, *fp = bbcp_Config.srcSpec;
@@ -429,7 +429,7 @@ int bbcp_Protocol::Process_get()
    delete fp;
    return retc;
 }
-  
+
 /******************************************************************************/
 /*                         P r o c e s s _ l o g i n                          */
 /******************************************************************************/
@@ -510,7 +510,7 @@ int bbcp_Protocol::Process_login(bbcp_Link *Net)
 /******************************************************************************/
 /* Target:                       R e q u e s t                                */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Request(bbcp_Node *Node)
 {
    long long totsz=0;
@@ -650,7 +650,7 @@ int bbcp_Protocol::Request(bbcp_Node *Node)
 /******************************************************************************/
 /*                          R e q u e s t _ e x i t                           */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Request_exit(int retc, const char *dRM)
 {
     char buff[256];
@@ -670,11 +670,11 @@ int bbcp_Protocol::Request_exit(int retc, const char *dRM)
 //
    return retc;
 }
-  
+
 /******************************************************************************/
 /*                         R e q u e s t _ f l i s t                          */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Request_flist(long long &totsz, int &numlinks, bool dotrim)
 {
    int retc, noteol, numfiles = 0;
@@ -740,11 +740,11 @@ int bbcp_Protocol::Request_flist(long long &totsz, int &numlinks, bool dotrim)
 //
    return numfiles;
 }
- 
+
 /******************************************************************************/
 /*                           R e q u e s t _ g e t                            */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Request_get(bbcp_FileSpec *fp)
 {
    int blen;
@@ -778,11 +778,11 @@ int bbcp_Protocol::Request_get(bbcp_FileSpec *fp)
              "failed to create", fp->targpath);
    return 1;
 }
-  
+
 /******************************************************************************/
 /*                         R e q u e s t _ l o g i n                          */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::Request_login(bbcp_Link *Net)
 {
    const char *CtlLogin = "login ctlr %s wsz: %s%d ver: %s dsz: %d\n";
@@ -830,14 +830,14 @@ int bbcp_Protocol::Request_login(bbcp_Link *Net)
 //
    return bbcp_Fmsg("Request_Login", "Invalid login ack sequence.");
 }
- 
+
 /******************************************************************************/
 /*                       P r i v a t e   M e t h o d s                        */
 /******************************************************************************/
 /******************************************************************************/
 /*                              A d j u s t W S                               */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::AdjustWS(char *wp, char *bp, int Final)
 {
    int  xWS, xAT, sWS, sAT, tWS, tAT, xBS = 0;
@@ -915,7 +915,7 @@ int bbcp_Protocol::AdjustWS(char *wp, char *bp, int Final)
    xWS = (sWS < tWS ? sWS : tWS);
    return xWS;
 }
-  
+
 /******************************************************************************/
 /*                                p u t C S V                                 */
 /******************************************************************************/
@@ -924,7 +924,7 @@ void bbcp_Protocol::putCSV(char *Host, char *csFn, char *csVal, int csVsz)
 {                                //1234567890123
    struct iovec iov[] = {{(char *)"Checksum: ", 10},
                         {bbcp_Config.csName,strlen(bbcp_Config.csName)},
-                        {(char *)" ", 1}, {csVal, csVsz},
+                        {(char *)" ", 1}, {csVal, (size_t) csVsz},
                         {(char *)" ", 1}, {Host, strlen(Host)},
                         {(char *)":", 1}, {csFn, strlen(csFn)},
                         {(char *)"\n",1}};
@@ -939,11 +939,11 @@ void bbcp_Protocol::putCSV(char *Host, char *csFn, char *csVal, int csVsz)
           }
       } else writev(STDERR_FILENO, iov, n);
 }
-  
+
 /******************************************************************************/
 /*                              S e n d A r g s                               */
 /******************************************************************************/
-  
+
 int bbcp_Protocol::SendArgs(bbcp_Node *Node, bbcp_FileSpec *fsp,
                             char *cbhost, int cbport, char *addOpt)
 {

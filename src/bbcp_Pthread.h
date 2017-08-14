@@ -26,11 +26,12 @@
 /* be used to endorse or promote products derived from this software without  */
 /* specific prior written permission of the institution or contributor.       */
 /******************************************************************************/
-  
+
 #include <errno.h>
 #include <pthread.h>
-#include <time.h>
 #include <semaphore.h>
+#include <system_error>
+#include <time.h>
 
 class bbcp_CondVar
 {
@@ -138,25 +139,25 @@ inline int  CondWait()
         do {rc=sem_trywait( &h_semaphore );} while (rc && errno==EINTR);
            if (rc)
               {if (errno == EBUSY) return 0;
-                  {throw "sem_CondWait() failed", errno;}
+                throw std::system_error(errno, std::system_category());
               }
         return 1;
        }
 
 inline void Post() {if (sem_post(&h_semaphore))
-                       {throw "sem_post() failed", errno;}
+    throw std::system_error(errno, std::system_category());
                    }
 
 inline void Wait() {int rc;
                     do {rc=sem_wait(&h_semaphore);} while (rc && errno==EINTR);
-                    if (rc) {throw "sem_wait() failed", errno;}
+                    throw std::system_error(errno, std::system_category());
                    }
 
   bbcp_Semaphore(int semval=1) {if (sem_init(&h_semaphore, 0, semval))
-                                   {throw "sem_init() failed", errno;}
+    throw std::system_error(errno, std::system_category());
                                }
  ~bbcp_Semaphore() {if (sem_destroy(&h_semaphore))
-                       {throw "sem_destroy() failed", errno;}
+    throw std::system_error(errno, std::system_category());
                    }
 
 private:

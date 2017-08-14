@@ -8,7 +8,8 @@ BINDIR     = ../bin/$(OSVER)
 
 OBJDIR     = ../obj/$(OSVER)
 
-ENVCFLAGS  =    -Dunix -D_BSD -D_ALL_SOURCE $(CFLAGS)
+ENVCFLAGS  = -Dunix -D_BSD -D_ALL_SOURCE $(CFLAGS)
+ENVCXXFLAGS  =    -Dunix -D_BSD -D_ALL_SOURCE -std=c++11 $(CXXFLAGS)
 
 ENVINCLUDE = -I. -I/usr/local/include -I/usr/include 
 
@@ -73,42 +74,42 @@ AIXcc      = xlc
 AIXOPT     = -q64 $(SUN64) $(NLGR) -D_REENTRANT -DOO_STD -DAIX -g
 
 SOURCE =      \
-     bbcp.C \
-     bbcp_Args.C \
-     bbcp_BuffPool.C \
-     bbcp_C32.C \
-     bbcp_ChkSum.C \
-     bbcp_Config.C \
-     bbcp_Emsg.C \
-     bbcp_File.C \
-     bbcp_FileSpec.C \
-     bbcp_FileSystem.C \
-     bbcp_FS_Null.C \
-     bbcp_FS_Pipe.C \
-     bbcp_FS_Unix.C \
-     bbcp_IO.C \
-     bbcp_IO_Null.C \
-     bbcp_IO_Pipe.C \
-     bbcp_Link.C \
-     bbcp_LogFile.C \
-     bbcp_MD5.C \
-     bbcp_MD5_openssl.C \
-     bbcp_NetAddr.C \
-     bbcp_NetAddrInfo.C \
-     bbcp_NetLogger.C \
-     bbcp_Network.C \
-     bbcp_Node.C \
-     bbcp_ProcMon.C \
-     bbcp_ProgMon.C \
-     bbcp_Protocol.C \
-     bbcp_Pthread.C \
-     bbcp_RTCopy.C \
-     bbcp_Set.C \
-     bbcp_Stream.C \
-     bbcp_System.C \
-     bbcp_Timer.C \
-     bbcp_Version.C \
-     bbcp_ZCX.C \
+     bbcp.cpp \
+     bbcp_Args.cpp \
+     bbcp_BuffPool.cpp \
+     bbcp_C32.cpp \
+     bbcp_ChkSum.cpp \
+     bbcp_Config.cpp \
+     bbcp_Emsg.cpp \
+     bbcp_File.cpp \
+     bbcp_FileSpec.cpp \
+     bbcp_FileSystem.cpp \
+     bbcp_FS_Null.cpp \
+     bbcp_FS_Pipe.cpp \
+     bbcp_FS_Unix.cpp \
+     bbcp_IO.cpp \
+     bbcp_IO_Null.cpp \
+     bbcp_IO_Pipe.cpp \
+     bbcp_Link.cpp \
+     bbcp_LogFile.cpp \
+     bbcp_MD5.cpp \
+     bbcp_MD5_openssl.cpp \
+     bbcp_NetAddr.cpp \
+     bbcp_NetAddrInfo.cpp \
+     bbcp_NetLogger.cpp \
+     bbcp_Network.cpp \
+     bbcp_Node.cpp \
+     bbcp_ProcMon.cpp \
+     bbcp_ProgMon.cpp \
+     bbcp_Protocol.cpp \
+     bbcp_Pthread.cpp \
+     bbcp_RTCopy.cpp \
+     bbcp_Set.cpp \
+     bbcp_Stream.cpp \
+     bbcp_System.cpp \
+     bbcp_Timer.cpp \
+     bbcp_Version.cpp \
+     bbcp_ZCX.cpp \
      NetLogger.c
 
 OBJECT =      \
@@ -154,13 +155,13 @@ TARGET  = $(BINDIR)/bbcp
 
 
 all:
-	@make `uname` OSVER=`../MakeSname` RELEASE=`../MakeSname -r`
+	@+make `uname` OSVER=`../MakeSname` RELEASE=`../MakeSname -r`
 	@echo Make done.
 
 doitall: $(TARGET)
 
 clean:
-	@make cleanall OSVER=`../MakeSname`
+	@+make cleanall OSVER=`../MakeSname`
 
 cleanall:
 	@rm -f $(OBJECT) $(BINDIR)/core $(TARGET) $(OBJDIR)/*
@@ -174,53 +175,53 @@ echo:
 	done
 
 AIX:
-	@make $(MKPARMS) \
+	@+make $(MKPARMS) \
 	CC=$(AIXCC) \
 	BB=$(AIXcc) \
-	BFLAGS="$(ENVCFLAGS) $(AIXOPT)" \
 	CFLAGS="$(ENVCFLAGS) $(AIXOPT)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(AIXOPT)" \
 	INCLUDE="$(ENVINCLUDE)"  \
 	LIBS="$(AIXLIBS)"
 
 FreeBSD:
-	@make $(MKPARMS)  \
+	@+make $(MKPARMS)  \
 	CC=$(BSDCC) \
 	BB=$(BSDcc) \
-	CFLAGS="$(ENVCFLAGS) $(BSDOPT) $(OPT)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(BSDOPT) $(OPT)" \
 	INCLUDE="$(ENVINCLUDE)" \
 	LIBS="$(BSDLIBS)"
 
 Linux:
-	@make makeLinux`/bin/uname -m` \
+	@+make makeLinux`/bin/uname -m` \
 	MD5HEADER=bbcp_MD5_openssl.h \
 	OBJMD5="$(OBJDIR)/bbcp_MD5_openssl.o"
 
 makeLinuxi686:
 makeLinuxi386:
-	@make $(MKPARMS)  \
+	@+make $(MKPARMS)  \
 	CC=$(LNXCC) \
 	BB=$(LNXcc) \
-	CFLAGS="$(ENVCFLAGS) $(LNXOPT)" \
-	BFLAGS="$(ENVCFLAGS) $(LNXOPT_B)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(LNXOPT)" \
+	CFLAGS="$(ENVCFLAGS) $(LNXOPT_B)" \
 	INCLUDE="$(ENVINCLUDE)" \
 	LIBS="$(LNXLIBS32)"
 
 makeLinuxx86_64:
 	echo "$(LNXLIBS64)"
-	@make $(MKPARMS) RR=$(RELNUM) \
+	@+make $(MKPARMS) RR=$(RELNUM) \
 	CC=$(LNXCC) \
 	BB=$(LNXcc) \
-	CFLAGS="$(ENVCFLAGS) $(LNXOPT)" \
-	BFLAGS="$(ENVCFLAGS) $(LNXOPT_B)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(LNXOPT)" \
+	CFLAGS="$(ENVCFLAGS) $(LNXOPT_B)" \
 	INCLUDE="$(ENVINCLUDE)" \
 	LIBS="$(LNXLIBS64)"
 
 Darwin:
 	@MACOSX_DEPLOYMENT_TARGET=10.5;\
-	make $(MKPARMS)  \
+	+make $(MKPARMS)  \
 	CC=$(MACCC) \
 	BB=$(MACcc) \
-	CFLAGS="$(ENVCFLAGS) $(MACOPT) $(OPT)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(MACOPT) $(OPT)" \
 	INCLUDE="$(ENVINCLUDE)" \
 	LIBS="$(MACLIBS)" \
 	MD5HEADER=bbcp_MD5_openssl.h \
@@ -228,35 +229,35 @@ Darwin:
 
 
 UNICOS/mp:
-	@make $(MKPARMS)  \
+	@+make $(MKPARMS)  \
 	CC=$(LNXCC) \
 	BB=$(LNXcc) \
-	CFLAGS="$(ENVCFLAGS) $(LNXOPT)" \
-	BFLAGS="$(ENVCFLAGS) $(LNXOPT_B)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(LNXOPT)" \
+	CFLAGS="$(ENVCFLAGS) $(LNXOPT_B)" \
 	INCLUDE="$(ENVINCLUDE)" \
 	LIBS="$(LNXLIBS)"
 
 SunOS:
-	@make $(MKPARMS) \
+	@+make $(MKPARMS) \
 	CC=$(SUNCC) \
 	BB=$(SUNcc) \
-	CFLAGS="$(ENVCFLAGS) $(SUNOPT) $(OPT) -DRELEASE=$(RELEASE)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(SUNOPT) $(OPT) -DRELEASE=$(RELEASE)" \
 	INCLUDE="$(ENVINCLUDE)" \
 	LIBS="$(SUNLIBS)"
 
 SunX86:
-	@make $(MKPARMS) \
+	@+make $(MKPARMS) \
 	CC=$(S86CC) \
 	BB=$(S86cc) \
-	CFLAGS="$(ENVCFLAGS) $(S86OPT) $(OPT) -DRELEASE=$(RELEASE)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(S86OPT) $(OPT) -DRELEASE=$(RELEASE)" \
 	INCLUDE="$(ENVINCLUDE)" \
 	LIBS="$(SUNLIBS)"
 
 Sungcc:
-	@make $(MKPARMS) \
+	@+make $(MKPARMS) \
 	CC=$(SUNGCC) \
 	BB=$(SUNGcc) \
-	CFLAGS="$(ENVCFLAGS) $(SUNGCCOPT) $(OPT) -DRELEASE=$(RELEASE)" \
+	CXXFLAGS="$(ENVCXXFLAGS) $(SUNGCCOPT) $(OPT) -DRELEASE=$(RELEASE)" \
 	INCLUDE="$(ENVINCLUDE)" \
 	LIBS="$(SUNLIBS)" \
 	OSVER=`../MakeSname`
@@ -265,196 +266,196 @@ $(TARGET): $(OBJECT)
 	@echo Creating executable $(TARGET) ...
 	@$(CC) $(OBJECT) $(LIBS) -o $(TARGET)
 
-$(OBJDIR)/bbcp.o: bbcp.C bbcp_Args.h bbcp_Config.h bbcp_Debug.h bbcp_FileSpec.h \
+$(OBJDIR)/bbcp.o: bbcp.cpp bbcp_Args.h bbcp_Config.h bbcp_Debug.h bbcp_FileSpec.h \
                   bbcp_LogFile.h bbcp_Node.h bbcp_Protocol.h bbcp_System.h \
                   bbcp_Headers.h
-	@echo Compiling bbcp.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Args.o: bbcp_Args.C bbcp_Args.h bbcp_Config.h bbcp_Stream.h
-	@echo Compiling bbcp_Args.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_Args.o: bbcp_Args.cpp bbcp_Args.h bbcp_Config.h bbcp_Stream.h
+	@echo Compiling bbcp_Args.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_BuffPool.o: bbcp_BuffPool.C bbcp_BuffPool.h bbcp_Debug.h \
+$(OBJDIR)/bbcp_BuffPool.o: bbcp_BuffPool.cpp bbcp_BuffPool.h bbcp_Debug.h \
                            bbcp_Emsg.h bbcp_Pthread.h bbcp_Headers.h
-	@echo Compiling bbcp_BuffPool.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_BuffPool.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_C32.o: bbcp_C32.C bbcp_C32.h bbcp_ChkSum.h bbcp_Endian.h
-	@echo Compiling bbcp_C32.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_C32.o: bbcp_C32.cpp bbcp_C32.h bbcp_ChkSum.h bbcp_Endian.h
+	@echo Compiling bbcp_C32.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_ChkSum.o: bbcp_ChkSum.C bbcp_ChkSum.h bbcp_Endian.h \
+$(OBJDIR)/bbcp_ChkSum.o: bbcp_ChkSum.cpp bbcp_ChkSum.h bbcp_Endian.h \
                          bbcp_A32.h bbcp_A32_zlib.h bbcp_C32.h bbcp_MD5.h $(MD5HEADER)
-	@echo Compiling bbcp_ChkSum.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_ChkSum.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Config.o: bbcp_Config.C bbcp_Config.h bbcp_Args.h \
+$(OBJDIR)/bbcp_Config.o: bbcp_Config.cpp bbcp_Config.h bbcp_Args.h \
                          bbcp_Debug.h bbcp_Emsg.h bbcp_FileSpec.h bbcp_LogFile.h \
                          bbcp_NetLogger.h bbcp_Network.h bbcp_Platform.h \
                          bbcp_Stream.h bbcp_System.h bbcp_Version.h \
                          bbcp_Headers.h  bbcp_Pthread.h
-	@echo Compiling bbcp_Config.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_Config.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Emsg.o: bbcp_Emsg.C bbcp_Emsg.h bbcp_Debug.h bbcp_Platform.h \
+$(OBJDIR)/bbcp_Emsg.o: bbcp_Emsg.cpp bbcp_Emsg.h bbcp_Debug.h bbcp_Platform.h \
                        bbcp_Headers.h
-	@echo Compiling bbcp_Emsg.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_Emsg.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_File.o: bbcp_File.C bbcp_File.h bbcp_IO.h bbcp_BuffPool.h \
+$(OBJDIR)/bbcp_File.o: bbcp_File.cpp bbcp_File.h bbcp_IO.h bbcp_BuffPool.h \
                        bbcp_Config.h bbcp_Debug.h bbcp_Emsg.h bbcp_Pthread.h \
                        bbcp_Platform.h bbcp_Headers.h bbcp_ChkSum.h \
                        bbcp_RTCopy.h
-	@echo Compiling bbcp_File.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_File.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_FileSpec.o: bbcp_FileSpec.C bbcp_FileSpec.h bbcp_Config.h \
+$(OBJDIR)/bbcp_FileSpec.o: bbcp_FileSpec.cpp bbcp_FileSpec.h bbcp_Config.h \
                            bbcp_Emsg.h bbcp_FileSystem.h bbcp_FS_Unix.h \
                            bbcp_Pthread.h
-	@echo Compiling bbcp_FileSpec.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_FileSpec.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_FileSystem.o: bbcp_FileSystem.C bbcp_FileSystem.h \
+$(OBJDIR)/bbcp_FileSystem.o: bbcp_FileSystem.cpp bbcp_FileSystem.h \
                              bbcp_FS_Null.h bbcp_FS_Pipe.h bbcp_FS_Unix.h
-	@echo Compiling bbcp_FileSystem.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_FileSystem.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_FS_Null.o: bbcp_FS_Null.C bbcp_FS_Null.h \
+$(OBJDIR)/bbcp_FS_Null.o: bbcp_FS_Null.cpp bbcp_FS_Null.h \
                           bbcp_IO_Null.h bbcp_FileSystem.h bbcp_System.h \
                           bbcp_Platform.h bbcp_Pthread.h
-	@echo Compiling bbcp_FS_Null.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_FS_Null.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_FS_Pipe.o: bbcp_FS_Pipe.C  bbcp_FS_Pipe.h    bbcp_FS_Unix.h\
+$(OBJDIR)/bbcp_FS_Pipe.o: bbcp_FS_Pipe.cpp  bbcp_FS_Pipe.h    bbcp_FS_Unix.h\
                           bbcp_IO_Pipe.h  bbcp_FileSystem.h bbcp_System.h \
                           bbcp_Platform.h bbcp_Pthread.h    bbcp_Emsg.h
-	@echo Compiling bbcp_FS_Pipe.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_FS_Pipe.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_FS_Unix.o: bbcp_FS_Unix.C bbcp_FS_Unix.h bbcp_FileSystem.h \
+$(OBJDIR)/bbcp_FS_Unix.o: bbcp_FS_Unix.cpp bbcp_FS_Unix.h bbcp_FileSystem.h \
                           bbcp_Config.h  bbcp_IO.h      bbcp_IO_Null.h \
                           bbcp_Platform.h bbcp_System.h bbcp_Pthread.h
-	@echo Compiling bbcp_FS_Unix.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_FS_Unix.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_IO.o: bbcp_IO.C bbcp_IO.h bbcp_NetLogger.h bbcp_Timer.h
-	@echo Compiling bbcp_IO.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_IO.o: bbcp_IO.cpp bbcp_IO.h bbcp_NetLogger.h bbcp_Timer.h
+	@echo Compiling bbcp_IO.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_IO_Null.o: bbcp_IO_Null.C bbcp_IO_Null.h bbcp_IO.h
-	@echo Compiling bbcp_IO_Null.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_IO_Null.o: bbcp_IO_Null.cpp bbcp_IO_Null.h bbcp_IO.h
+	@echo Compiling bbcp_IO_Null.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_IO_Pipe.o: bbcp_IO_Pipe.C bbcp_IO_Pipe.h bbcp_IO.h \
+$(OBJDIR)/bbcp_IO_Pipe.o: bbcp_IO_Pipe.cpp bbcp_IO_Pipe.h bbcp_IO.h \
                           bbcp_System.h
-	@echo Compiling bbcp_IO_Pipe.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_IO_Pipe.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Link.o:  bbcp_Link.C bbcp_Link.h bbcp_File.h bbcp_IO.h \
+$(OBJDIR)/bbcp_Link.o:  bbcp_Link.cpp bbcp_Link.h bbcp_File.h bbcp_IO.h \
                         bbcp_BuffPool.h bbcp_ChkSum.h  bbcp_Config.h \
                         bbcp_Debug.h bbcp_Emsg.h \
                         bbcp_Link.h bbcp_Network.h bbcp_Platform.h \
                         bbcp_Timer.h
-	@echo Compiling bbcp_Link.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_Link.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_LogFile.o:  bbcp_LogFile.C bbcp_LogFile.h bbcp_Pthread.h \
+$(OBJDIR)/bbcp_LogFile.o:  bbcp_LogFile.cpp bbcp_LogFile.h bbcp_Pthread.h \
                            bbcp_Debug.h bbcp_Emsg.h bbcp_Platform.h \
                            bbcp_Headers.h bbcp_Timer.h
-	@echo Compiling bbcp_LogFile.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_LogFile.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_MD5.o: bbcp_MD5.C bbcp_MD5.h bbcp_ChkSum.h bbcp_Endian.h
-	@echo Compiling bbcp_MD5.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_MD5.o: bbcp_MD5.cpp bbcp_MD5.h bbcp_ChkSum.h bbcp_Endian.h
+	@echo Compiling bbcp_MD5.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_MD5_openssl.o: bbcp_MD5_openssl.C bbcp_MD5_openssl.h bbcp_ChkSum.h bbcp_Endian.h
-	@echo Compiling bbcp_MD5_openssl.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_MD5_openssl.o: bbcp_MD5_openssl.cpp bbcp_MD5_openssl.h bbcp_ChkSum.h bbcp_Endian.h
+	@echo Compiling bbcp_MD5_openssl.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_NetLogger.o:  bbcp_NetLogger.C bbcp_NetLogger.h NetLogger.h
+$(OBJDIR)/bbcp_NetLogger.o:  bbcp_NetLogger.cpp bbcp_NetLogger.h NetLogger.h
 	@echo Compiling bbcp_Netlogger.c
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_NetAddr.o:  bbcp_NetAddr.C bbcp_NetAddr.h bbcp_NetAddrInfo.h \
+$(OBJDIR)/bbcp_NetAddr.o:  bbcp_NetAddr.cpp bbcp_NetAddr.h bbcp_NetAddrInfo.h \
                            bbcp_NetSockAddr.h
-	@echo Compiling bbcp_NetAddr.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_NetAddr.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_NetAddrInfo.o:  bbcp_NetAddrInfo.C bbcp_NetAddrInfo.h \
+$(OBJDIR)/bbcp_NetAddrInfo.o:  bbcp_NetAddrInfo.cpp bbcp_NetAddrInfo.h \
                                bbcp_NetSockAddr.h
-	@echo Compiling bbcp_NetAddrInfo.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_NetAddrInfo.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Network.o:  bbcp_Network.C bbcp_Network.h bbcp_Debug.h \
+$(OBJDIR)/bbcp_Network.o:  bbcp_Network.cpp bbcp_Network.h bbcp_Debug.h \
                            bbcp_Emsg.h bbcp_Link.h bbcp_Pthread.h \
                            bbcp_NetAddr.h bbcp_NetAddrInfo.h  bbcp_Platform.h
-	@echo Compiling bbcp_Network.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_Network.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Node.o: bbcp_Node.C bbcp_Node.h bbcp_Config.h bbcp_Emsg.h \
+$(OBJDIR)/bbcp_Node.o: bbcp_Node.cpp bbcp_Node.h bbcp_Config.h bbcp_Emsg.h \
                        bbcp_Debug.h bbcp_File.h bbcp_FileSpec.h bbcp_Link.h \
                        bbcp_BuffPool.h bbcp_Network.h bbcp_Protocol.h \
                        bbcp_ProcMon.h bbcp_ProgMon.h bbcp_Stream.h \
                        bbcp_System.h bbcp_ZCX.h bbcp_Headers.h
-	@echo Compiling bbcp_Node.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_Node.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_ProcMon.o: bbcp_ProcMon.C bbcp_ProcMon.h bbcp_Debug.h \
+$(OBJDIR)/bbcp_ProcMon.o: bbcp_ProcMon.cpp bbcp_ProcMon.h bbcp_Debug.h \
                           bbcp_Emsg.h bbcp_File.h bbcp_Pthread.h bbcp_Headers.h
-	@echo Compiling bbcp_ProcMon.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_ProcMon.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_ProgMon.o: bbcp_ProgMon.C bbcp_ProgMon.h bbcp_Config.h \
+$(OBJDIR)/bbcp_ProgMon.o: bbcp_ProgMon.cpp bbcp_ProgMon.h bbcp_Config.h \
                           bbcp_Debug.h bbcp_File.h bbcp_Headers.h \
                           bbcp_Pthread.h bbcp_Timer.h bbcp_ZCX.h
-	@echo Compiling bbcp_ProgMon.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_ProgMon.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Protocol.o: bbcp_Protocol.C bbcp_Protocol.h bbcp_Config.h  \
+$(OBJDIR)/bbcp_Protocol.o: bbcp_Protocol.cpp bbcp_Protocol.h bbcp_Config.h  \
                            bbcp_Node.h bbcp_FileSpec.h bbcp_FileSystem.h  \
                            bbcp_IO.h bbcp_File.h bbcp_Link.h bbcp_Debug.h \
                            bbcp_Pthread.h bbcp_Stream.h bbcp_Emsg.h \
                            bbcp_Network.h bbcp_Version.h bbcp_Headers.h
-	@echo Compiling bbcp_Protocol.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_Protocol.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Pthread.o: bbcp_Pthread.C bbcp_Pthread.h
-	@echo Compiling bbcp_Pthread.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_Pthread.o: bbcp_Pthread.cpp bbcp_Pthread.h
+	@echo Compiling bbcp_Pthread.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_RTCopy.o: bbcp_RTCopy.C bbcp_RTCopy.h bbcp_Config.h \
+$(OBJDIR)/bbcp_RTCopy.o: bbcp_RTCopy.cpp bbcp_RTCopy.h bbcp_Config.h \
                          bbcp_Emsg.h bbcp_FileSystem.h bbcp_Pthread.h
-	@echo Compiling bbcp_RTCopy.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_RTCopy.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Set.o: bbcp_Set.C bbcp_C32.h
-	@echo Compiling bbcp_Set.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_Set.o: bbcp_Set.cpp bbcp_C32.h
+	@echo Compiling bbcp_Set.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Stream.o: bbcp_Stream.C bbcp_Stream.h bbcp_Config.h bbcp_Debug.h \
+$(OBJDIR)/bbcp_Stream.o: bbcp_Stream.cpp bbcp_Stream.h bbcp_Config.h bbcp_Debug.h \
                          bbcp_Emsg.h bbcp_System.h
-	@echo Compiling bbcp_Stream.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_Stream.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_System.o: bbcp_System.C bbcp_System.h bbcp_Config.h \
+$(OBJDIR)/bbcp_System.o: bbcp_System.cpp bbcp_System.h bbcp_Config.h \
                          bbcp_Debug.h bbcp_Emsg.h bbcp_Platform.h bbcp_Pthread.h
-	@echo Compiling bbcp_System.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+	@echo Compiling bbcp_System.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Timer.o: bbcp_Timer.C bbcp_Timer.h
-	@echo Compiling bbcp_Timer.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_Timer.o: bbcp_Timer.cpp bbcp_Timer.h
+	@echo Compiling bbcp_Timer.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_Version.o: bbcp_Version.C bbcp_Version.h bbcp_Config.h bbcp_Emsg.h
-	@echo Compiling bbcp_Version.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_Version.o: bbcp_Version.cpp bbcp_Version.h bbcp_Config.h bbcp_Emsg.h
+	@echo Compiling bbcp_Version.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
-$(OBJDIR)/bbcp_ZCX.o: bbcp_ZCX.C bbcp_ZCX.h bbcp_BuffPool.h bbcp_Emsg.h
-	@echo Compiling bbcp_ZCX.C
-	@$(CC) -c $(CFLAGS) $(INCLUDE) $(*F).C -o $(OBJDIR)/$(*F).o
+$(OBJDIR)/bbcp_ZCX.o: bbcp_ZCX.cpp bbcp_ZCX.h bbcp_BuffPool.h bbcp_Emsg.h
+	@echo Compiling bbcp_ZCX.cpp
+	@$(CC) -c $(CXXFLAGS) $(INCLUDE) $(*F).cpp -o $(OBJDIR)/$(*F).o
 
 $(OBJDIR)/NetLogger.o: NetLogger.c NetLogger.h
 	@echo Compiling NetLogger.c
-	@$(BB) -c $(BFLAGS) $(INCLUDE) $(*F).c -o $(OBJDIR)/$(*F).o
+	@$(BB) -c $(CFLAGS) $(INCLUDE) $(*F).c -o $(OBJDIR)/$(*F).o

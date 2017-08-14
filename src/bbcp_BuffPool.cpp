@@ -31,6 +31,7 @@
 #include <sys/mman.h>
 #include <errno.h>
 
+
 #if defined(MACOS) || defined(AIX)
 #define memalign(pgsz,amt) valloc(amt)
 #elif defined(__FreeBSD__)
@@ -38,7 +39,7 @@
 void *memalign(size_t alignment, size_t size) {
 	void *temp;
 	if (posix_memalign(&temp, alignment, size) != 0) {
-		{ throw "posix_memalign() failure!", errno; }
+        throw std::system_error(errno, std::system_category());
 	}
 	return temp;
 }

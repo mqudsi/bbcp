@@ -1,6 +1,7 @@
 .OBJDIR: ./
+.PHONY: src 
 
-all:
-	cd src && make
+src:
+	+$(MAKE) -C src
 clean:
-	cd src && make clean
+	+$(MAKE) -C src clean
