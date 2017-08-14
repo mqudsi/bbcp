@@ -8,8 +8,9 @@ BINDIR     = ../bin/$(OSVER)
 
 OBJDIR     = ../obj/$(OSVER)
 
-ENVCFLAGS  = -Dunix -D_BSD -D_ALL_SOURCE $(CFLAGS)
-ENVCXXFLAGS  =    -Dunix -D_BSD -D_ALL_SOURCE -std=c++11 $(CXXFLAGS)
+ENVCPPFLAGS = -Dunix -D_BSD -D_ALL_SOURCE $(CPPFLAGS)
+ENVCFLAGS  = $(ENVCPPFLAGS) $(CFLAGS)
+ENVCXXFLAGS  =    $(ENVCPPFLAGS) -std=c++11 $(CXXFLAGS)
 
 ENVINCLUDE = -I. -I/usr/local/include -I/usr/include 
 
