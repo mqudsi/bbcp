@@ -26,7 +26,6 @@
 /******************************************************************************/
   
 #include <stdlib.h>
-#include <strings.h>
 #include "bbcp_Args.h"
 #include "bbcp_Config.h"
 #include "bbcp_Headers.h"

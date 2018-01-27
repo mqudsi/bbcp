@@ -43,7 +43,6 @@
 #include <netdb.h>
 #include <signal.h>
 #include <stdlib.h>
-#include <strings.h>
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/time.h>

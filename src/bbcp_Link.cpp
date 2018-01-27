@@ -27,7 +27,6 @@
   
 #include <sys/types.h>
 #include <stdlib.h>
-#include <strings.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <sys/socket.h>

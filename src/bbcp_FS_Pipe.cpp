@@ -32,7 +32,6 @@
 
 #include <fcntl.h>
 #include <grp.h>
-#include <strings.h>
 #include <unistd.h>
 #include <utime.h>
 #include <sys/types.h>

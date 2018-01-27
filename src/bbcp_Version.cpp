@@ -25,7 +25,6 @@
 /* specific prior written permission of the institution or contributor.       */
 /******************************************************************************/
   
-#include <strings.h>
 
 #include "bbcp_Config.h"
 #include "bbcp_Emsg.h"

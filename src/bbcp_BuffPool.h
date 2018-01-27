@@ -28,15 +28,15 @@
 /******************************************************************************/
 
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
 #include "bbcp_Pthread.h"
 
 class bbcp_Buffer;
-  
+
 /******************************************************************************/
 /*                   C l a s s   b b c p _ B u f f P o o l                    */
 /******************************************************************************/
-  
+
 class bbcp_BuffPool
 {
 public:
@@ -107,7 +107,7 @@ struct bbcp_Header
        char blen[4];       // int       buffer length
        char boff[8];       // Long long buffer offset
        char cksm[16];      // MD5 check sum (optional)
-       bbcp_Header() {bzero(cksm, sizeof(cksm));}
+       bbcp_Header() {memset(cksm, 0, sizeof(cksm));}
       ~bbcp_Header() {}
        };
 

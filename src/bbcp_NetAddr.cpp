@@ -30,7 +30,6 @@
 #include <errno.h>
 #include <netdb.h>
 #include <stdio.h>
-#include <strings.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/param.h>
