@@ -58,17 +58,17 @@
 /******************************************************************************/
 /*                        S t a t i c   O b j e c t s                         */
 /******************************************************************************/
-  
+
 int    bbcp_Network::pFirst = 0;
 int    bbcp_Network::pLast  = 0;
 
 /******************************************************************************/
 /*                           C o n s t r u c t o r                            */
 /******************************************************************************/
-  
+
+static const int BBCP_IPPROTO_TCP = 6;
 bbcp_Network::bbcp_Network()
 {
-   static const int BBCP_IPPROTO_TCP = 6;
    struct protoent *pp;
    char netBuff[256];
    int  netFD;
@@ -418,7 +418,7 @@ int bbcp_Network::MaxWSize(int isSink)
 
 // Get maximum segment size
 //
-   if (getsockopt(sfd, IPPROTO_TCP, TCP_MAXSEG, (gsval_t)&maxSegment, &szseg))
+   if (getsockopt(sfd, BBCP_IPPROTO_TCP, TCP_MAXSEG, (gsval_t)&maxSegment, &szseg))
       bbcp_Emsg("MaxWSize", errno, "getting TCP maxseg.");
 
 // If we already have the maximum window size (via constructor) then no need
